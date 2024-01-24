@@ -12,17 +12,24 @@ enum ZendeskMessagingMessageType {
   loginFailure,
   logoutSuccess,
   logoutFailure,
+  // add start
+  unreadMessageCountChanged,
+  authenticationFailed,
+  unknownEvent,
+  // add end
 }
 
 /// Used by ZendeskMessaging to attach custom async observers
 class ZendeskMessagingObserver {
   ZendeskMessagingObserver(this.removeOnCall, this.func);
+
   final bool removeOnCall;
   final Function(Map? args) func;
 }
 
 class ZendeskLoginResponse {
   ZendeskLoginResponse(this.id, this.externalId);
+
   final String? id;
   final String? externalId;
 }
@@ -36,6 +43,12 @@ class ZendeskMessaging {
     'login_failure': ZendeskMessagingMessageType.loginFailure,
     'logout_success': ZendeskMessagingMessageType.logoutSuccess,
     'logout_failure': ZendeskMessagingMessageType.logoutFailure,
+    // add start
+    'unread_message_count_changed':
+        ZendeskMessagingMessageType.unreadMessageCountChanged,
+    'authentication_failed': ZendeskMessagingMessageType.authenticationFailed,
+    'unknown_event': ZendeskMessagingMessageType.unknownEvent,
+    // add end
   };
 
   /// Global handler, all channel method calls will trigger this observer

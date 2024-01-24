@@ -9,6 +9,11 @@ public class ZendeskMessaging: NSObject {
     private static var loginFailure: String = "login_failure"
     private static var logoutSuccess: String = "logout_success"
     private static var logoutFailure: String = "logout_failure"
+    // add start
+    private static var unreadMessageCountChanged: String = "unread_message_count_changed"
+    private static var authenticationFailed: String = "authentication_failed"
+    private static var unknownEvent: String = "unknown_event"
+    // add end
     
     let TAG = "[ZendeskMessaging]"
     
@@ -32,6 +37,24 @@ public class ZendeskMessaging: NSObject {
                     self.zendeskPlugin?.isInitialized = true
                     print("\(self.TAG) - initialize success")
                     self.channel?.invokeMethod(ZendeskMessaging.initializeSuccess, arguments: [:])
+                    
+                    // add start
+                    Zendesk.instance?.addEventObserver(self) { event in
+                        switch event {
+                        case .unreadMessageCountChanged(let unreadCount):
+                            self.channel?.invokeMethod(ZendeskMessaging.unreadMessageCountChanged, arguments: ["unreadCount": unreadCount])
+                        case .authenticationFailed(let error as NSError):
+                            print("Authentication error received: \(error)")
+                            print("Domain: \(error.domain)")
+                            print("Error code: \(error.code)")
+                            print("Localized Description: \(error.localizedDescription)")
+                            self.channel?.invokeMethod(ZendeskMessaging.authenticationFailed, arguments: ["error": error.localizedDescription])
+                        @unknown default:
+                            self.channel?.invokeMethod(ZendeskMessaging.unknownEvent, arguments: ["event": event])
+                            break
+                        }
+                    }
+                    // add end
                 }
             }
         }
@@ -40,6 +63,9 @@ public class ZendeskMessaging: NSObject {
     func invalidate() {
         Zendesk.invalidate()
        self.zendeskPlugin?.isInitialized = false
+       // add start
+       Zendesk.instance?.removeEventObserver(self)
+       // add end
        print("\(self.TAG) - invalidate")
     }
     
