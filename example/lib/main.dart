@@ -14,6 +14,7 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   static const String androidChannelKey = "your android key";
+
   static const String iosChannelKey = "your iOS key";
 
   final List<String> channelMessages = [];
@@ -21,11 +22,14 @@ class _MyAppState extends State<MyApp> {
   bool isLogin = false;
   int unreadMessageCount = 0;
 
+  final _jwt = 'my_jwt';
+
   @override
   void initState() {
     super.initState();
     // Optional, observe all incoming messages
     ZendeskMessaging.setMessageHandler((type, arguments) {
+      debugPrint('setMessageHandler :: type:$type, arguments:$arguments');
       setState(() {
         channelMessages.add("$type - args=$arguments");
       });
@@ -70,7 +74,8 @@ class _MyAppState extends State<MyApp> {
                   ),
                   ElevatedButton(
                     onPressed: () => _getUnreadMessageCount(),
-                    child: Text('Get unread message count - $unreadMessageCount'),
+                    child:
+                        Text('Get unread message count - $unreadMessageCount'),
                   ),
                 ],
                 ElevatedButton(
@@ -116,7 +121,7 @@ class _MyAppState extends State<MyApp> {
   void _login() {
     // You can attach local observer when calling some methods to be notified when ready
     ZendeskMessaging.loginUserCallbacks(
-      jwt: "my_jwt",
+      jwt: _jwt,
       onSuccess: (id, externalId) => setState(() {
         channelMessages.add("Login observer - SUCCESS: $id, $externalId");
         isLogin = true;
@@ -134,26 +139,31 @@ class _MyAppState extends State<MyApp> {
       isLogin = false;
     });
   }
-    void _getUnreadMessageCount() async {
+
+  void _getUnreadMessageCount() async {
     final messageCount = await ZendeskMessaging.getUnreadMessageCount();
     if (mounted) {
       unreadMessageCount = messageCount;
       setState(() {});
     }
   }
+
   void _setTags() async {
     final tags = ['tag1', 'tag2', 'tag3'];
     await ZendeskMessaging.setConversationTags(tags);
   }
+
   void _clearTags() async {
     await ZendeskMessaging.clearConversationTags();
   }
-  void _checkUserLoggedIn()async {
-   final isLoggedIn = await ZendeskMessaging.isLoggedIn();
-   setState(() {
-     channelMessages.add('User is ${isLoggedIn?'':'not'} logged in');
-   });
+
+  void _checkUserLoggedIn() async {
+    final isLoggedIn = await ZendeskMessaging.isLoggedIn();
+    setState(() {
+      channelMessages.add('User is ${isLoggedIn ? '' : 'not'} logged in');
+    });
   }
+
   void _setFields() async {
     Map<String, String> fieldsMap = {};
 
@@ -162,9 +172,11 @@ class _MyAppState extends State<MyApp> {
 
     await ZendeskMessaging.setConversationFields(fieldsMap);
   }
+
   void _clearFields() async {
     await ZendeskMessaging.clearConversationFields();
   }
+
   void _show() {
     ZendeskMessaging.show();
   }
