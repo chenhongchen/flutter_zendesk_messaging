@@ -80,6 +80,7 @@ class ZendeskMessagingPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
                     return
                 }
                 result.success(zendeskMessaging.getUnreadMessageCount())
+                return
             }
             "setConversationTags" -> {
                 if (!isInitialized) {
@@ -142,6 +143,7 @@ class ZendeskMessagingPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
             }
             else -> {
                 result.notImplemented()
+                return
             }
         }
 

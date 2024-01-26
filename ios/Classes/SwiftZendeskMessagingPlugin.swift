@@ -62,14 +62,14 @@ public class SwiftZendeskMessagingPlugin: NSObject, FlutterPlugin {
                     print("\(TAG) - Messaging needs to be initialized first.\n")
                 }
                 result(handleMessageCount())
-                break
+                return
             
             case "isInitialized":
                 result(handleInitializedStatus())
-                break
+                return
             case "isLoggedIn":
                 result(handleLoggedInStatus())
-                break
+                return
             
             case "setConversationTags":
                 if (!isInitialized) {
@@ -106,6 +106,13 @@ public class SwiftZendeskMessagingPlugin: NSObject, FlutterPlugin {
                 break
             default:
                 result(FlutterMethodNotImplemented)
+                return;
+        }
+        
+        if (arguments != nil) {
+            result(arguments)
+        } else {
+            result(0)
         }
     }
 
