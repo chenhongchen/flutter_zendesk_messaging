@@ -78,6 +78,8 @@ public class ZendeskMessaging: NSObject {
             print("\(self.TAG) - Root view controller is nil")
             return
         }
+        
+        messagingViewController.modalPresentationStyle = .fullScreen
 
         // Check if rootViewController is already presenting another view controller
         if let presentedVC = rootViewController.presentedViewController {
