@@ -71,6 +71,21 @@ public class SwiftZendeskMessagingPlugin: NSObject, FlutterPlugin {
                 result(handleLoggedInStatus())
                 return
             
+            case "sendPageViewEvent":
+                if (!isInitialized) {
+                    print("\(TAG) - Messaging needs to be initialized first.\n")
+                }
+                let pageTitle = arguments?["pageTitle"] as! String
+                let url = arguments!["url"] as! String
+                zendeskMessaging.sendPageViewEvent(pageTitle: pageTitle, url: url) { res in
+                    switch res{
+                    case.success(let data):
+                        result("success")
+                    case.failure(let error):
+                        result(error.localizedDescription)
+                    }
+                }
+                return
             case "setConversationTags":
                 if (!isInitialized) {
                     print("\(TAG) - Messaging needs to be initialized first.\n")

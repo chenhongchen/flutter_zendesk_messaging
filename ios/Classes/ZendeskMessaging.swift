@@ -100,6 +100,11 @@ public class ZendeskMessaging: NSObject {
 
         print("\(self.TAG) - show")
     }
+    
+    func sendPageViewEvent(pageTitle: String, url: String, completionHandler: @escaping (Result<Void, Error>) -> Void) {
+        let pageView = PageView(pageTitle: pageTitle, url: url)
+        Zendesk.instance?.sendPageViewEvent(pageView,completionHandler: completionHandler)
+    }
 
     func setConversationTags(tags: [String]) {
         Zendesk.instance?.messaging?.setConversationTags(tags)

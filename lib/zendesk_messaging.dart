@@ -330,4 +330,15 @@ class ZendeskMessaging {
       debugPrint('ZendeskMessaging - clearConversationFields - Error: $e}');
     }
   }
+
+  /// sendPageViewEvent
+  static Future<String> sendPageViewEvent(String pageTitle, String url) async {
+    try {
+      return await _channel.invokeMethod(
+          'sendPageViewEvent', {'pageTitle': pageTitle, 'url': url});
+    } catch (e) {
+      debugPrint('ZendeskMessaging - sendPageViewEvent - Error: $e}');
+      return e.toString();
+    }
+  }
 }
