@@ -4,10 +4,13 @@ import io.flutter.plugin.common.MethodChannel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import zendesk.android.FailureCallback
+import zendesk.android.SuccessCallback
 import zendesk.android.Zendesk
 import zendesk.android.ZendeskUser
 import zendesk.android.events.ZendeskEvent
 import zendesk.android.events.ZendeskEventListener
+import zendesk.android.pageviewevents.PageView
 import zendesk.messaging.android.DefaultMessagingFactory
 
 
@@ -97,6 +100,19 @@ class ZendeskMessaging(private val plugin: ZendeskMessagingPlugin, private val c
         } catch (error: Throwable) {
             0
         }
+    }
+
+    fun sendPageViewEvent(
+            pageTitle: String, url: String,
+            successCallback: SuccessCallback<Unit>,
+            failureCallback: FailureCallback<Throwable>,
+    ) {
+        val pageView = PageView(url = url, pageTitle = pageTitle)
+        Zendesk.instance.sendPageView(
+                pageView,
+                successCallback,
+                failureCallback,
+        )
     }
 
     fun setConversationTags(tags: List<String>) {
